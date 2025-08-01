@@ -16,7 +16,7 @@ Ces villes sont placées sur la carte avec leurs coordonnées exactes. L'utilisa
 Au lancement, seules la sélection du pays ainsi que celle du nombre voulu de villes générées sont possibles. Une fois ces sélections faites, il faut cliquer sur le bouton 'Générer la carte'.
 ### Exécution de l'algorithme génétique
 La carte étant générée, il est alors possible de sélectionner une ville de départ et un nombre voulu de générations (soit le nombre de fois que l'algorithme génère une solution au problème; la solution la plus optimale est toujours celle retenue au fil des générations).
-Il faut alors cliquer sur 'Lancer l'algo' pour visualiser l'exécution de l'algorithme génétique, une fois les sélections évoquées précédemment sont faites.
+Il faut alors cliquer sur 'Lancer l'algo' pour visualiser l'exécution de l'algorithme génétique, une fois les sélections évoquées précédemment sont faites.  
 ![alt text](https://github.com/crakshay1/ChromaPath/blob/main/Assets/Portugal.gif)  
 Les chemins bleus sont les solutions trouvées à chaque génération. Une fois la recherche finie, la solution finale est montrée en jaune.
 ### Vue d'ensemble sur Chromapath 

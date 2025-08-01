@@ -65,6 +65,12 @@ nombre = tk.Label(select_frame, text="Choisir le nombre de villes à générer:"
 pays = tk.Label(select_frame, text="Choisir le pays à générer:", bg="#fa9cdb")
 scroll = tk.Spinbox(select_frame, from_=0, to=1000)
 
+# Indications
+tutorial_frame = tk.Frame(fenetre)
+tutorial_frame.pack(pady=30)
+cam = tk.Label(tutorial_frame, text="←↓↑→: Déplacer la caméra", bg="#fa9cdb")
+zooming = tk.Label(tutorial_frame, text = "A: Dezoomer     |     E: Zoomer", bg="#fa9cdb")
+
 def generer_carte():
     """
         Prend en compte le nombre N de villes générées aléatoirement, et le pays retenu
@@ -167,6 +173,7 @@ def algo():
     for ville in best_chemin:
         liste_x.append(ville.lng)
         liste_y.append(ville.lat)
+        
     # Retour à la ville de départ
     liste_x.append(best_chemin[0].lng)
     liste_y.append(best_chemin[0].lat)
@@ -192,6 +199,77 @@ def rafraichir():
     select_gen.destroy()
     canvas.draw()
 
+def bouger_cam(event):
+    step_ratio = 0.1  # 10% du cadre visible
+
+    xlim = ax.get_xlim()
+    ylim = ax.get_ylim()
+
+    dx = (xlim[1] - xlim[0]) * step_ratio
+    dy = (ylim[1] - ylim[0]) * step_ratio
+
+    if event.keysym == 'Left':
+        ax.set_xlim(xlim[0] - dx, xlim[1] - dx)
+    elif event.keysym == 'Right':
+        ax.set_xlim(xlim[0] + dx, xlim[1] + dx)
+    elif event.keysym == 'Up':
+        ax.set_ylim(ylim[0] + dy, ylim[1] + dy)
+    elif event.keysym == 'Down':
+        ax.set_ylim(ylim[0] - dy, ylim[1] - dy)
+
+    canvas.draw()
+
+
+def zoom(event):
+    if event.char.lower() == 'e':
+        base_scale = 1.2
+
+        xlim = ax.get_xlim()
+        ylim = ax.get_ylim()
+
+        # Centre actuel de l'affichage
+        center_x = (xlim[0] + xlim[1]) / 2
+        center_y = (ylim[0] + ylim[1]) / 2
+
+        # Mise à l'échelle
+        scale = 1 / base_scale
+
+        new_width = (xlim[1] - xlim[0]) * scale
+        new_height = (ylim[1] - ylim[0]) * scale
+
+        ax.set_xlim([center_x - new_width / 2,center_x + new_width / 2])
+        ax.set_ylim([center_y - new_height / 2,center_y + new_height / 2 ])
+
+        canvas.draw()
+
+# DEZOOM quand on appuie sur 'A'
+def unzoom(event):
+    if event.char.lower() == 'a':
+        base_scale = 1.2
+
+        xlim = ax.get_xlim()
+        ylim = ax.get_ylim()
+
+        # Centre actuel de l'affichage
+        center_x = (xlim[0] + xlim[1]) / 2
+        center_y = (ylim[0] + ylim[1]) / 2
+
+        # Mise à l'échelle
+        scale = 1 / base_scale
+
+        new_width = (xlim[1] - xlim[0]) / scale
+        new_height = (ylim[1] - ylim[0]) / scale
+
+        ax.set_xlim([center_x - new_width / 2, center_x + new_width / 2])
+        ax.set_ylim([center_y - new_height / 2,center_y + new_height / 2])
+
+        canvas.draw()
+
+# Pour qu'on puisse utiliser les touches 
+fenetre.bind("<e>", zoom)
+fenetre.bind("<a>", unzoom)
+fenetre.bind("<Key>", bouger_cam)
+
 fig, ax = plt.subplots(figsize=(6, 5))
 canvas = FigureCanvasTkAgg(fig, master=fenetre)
 canvas_widget = canvas.get_tk_widget()
@@ -206,7 +284,8 @@ bouton2 = tk.Button(bouton_frame, text="3 - Effacer tout", command = lambda : ra
 bouton3 = tk.Button(bouton_frame, text="2 - Lancer l'algo", command = lambda : algo())
 # Bouton lançant l'algorithme de parcours
 
-
+cam.grid(row=1, column=0, padx=10)
+zooming.grid(row=1, column=1, padx=10)
 nombre.grid(row=0, column=1, padx=10)
 scroll.grid(row=1, column=1, padx=10)
 pays.grid(row=0, column = 0, padx=10)
